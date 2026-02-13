@@ -209,6 +209,13 @@ export default function LeadDetail() {
         <div className="flex items-center gap-2">
           {(isAdmin || isSales) && (
             <>
+              <Link
+                to={`/quotations/new?lead_id=${id}`}
+                className="btn btn-secondary"
+              >
+                <FileText className="w-4 h-4 mr-2" />
+                Create Quotation
+              </Link>
               <button
                 onClick={() => setShowFollowupForm(!showFollowupForm)}
                 className="btn btn-secondary"

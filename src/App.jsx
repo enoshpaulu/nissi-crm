@@ -9,6 +9,21 @@ import LeadForm from './pages/LeadForm'
 import LeadDetail from './pages/LeadDetail'
 import Followups from './pages/Followups'
 import FollowupForm from './pages/FollowupForm'
+import Products from './pages/Products'
+import ProductForm from './pages/ProductForm'
+import Quotations from './pages/Quotations'
+import QuotationForm from './pages/QuotationForm'
+import QuotationDetail from './pages/QuotationDetail'
+import Invoices from './pages/Invoices'
+import InvoiceForm from './pages/InvoiceForm'
+import InvoiceDetail from './pages/InvoiceDetail'
+import Payments from './pages/Payments'
+import PaymentForm from './pages/PaymentForm'
+import Expenses from './pages/Expenses'
+import ExpenseForm from './pages/ExpenseForm'
+import Projects from './pages/Projects'
+import ProjectDetail from './pages/ProjectDetail'
+import ProjectForm from './pages/ProjectForm'
 
 // Placeholder components for other pages
 const ComingSoon = ({ title }) => (
@@ -127,46 +142,228 @@ function App() {
               </ProtectedRoute>
             }
           />
-
+          
+          {/* Products Routes */}
+          <Route
+            path="/products"
+            element={
+              <ProtectedRoute allowedRoles={['admin', 'sales', 'accounts']}>
+                <Layout>
+                  <Products />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          
+          <Route
+            path="/products/new"
+            element={
+              <ProtectedRoute allowedRoles={['admin', 'sales']}>
+                <Layout>
+                  <ProductForm />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          
+          <Route
+            path="/products/:id/edit"
+            element={
+              <ProtectedRoute allowedRoles={['admin', 'sales']}>
+                <Layout>
+                  <ProductForm />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          
+          {/* Quotations Routes */}
           <Route
             path="/quotations"
             element={
               <ProtectedRoute allowedRoles={['admin', 'sales', 'accounts']}>
                 <Layout>
-                  <ComingSoon title="Quotations Module" />
+                  <Quotations />
                 </Layout>
               </ProtectedRoute>
             }
           />
-
+          
+          <Route
+            path="/quotations/new"
+            element={
+              <ProtectedRoute allowedRoles={['admin', 'sales']}>
+                <Layout>
+                  <QuotationForm />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          
+          <Route
+            path="/quotations/:id/edit"
+            element={
+              <ProtectedRoute allowedRoles={['admin', 'sales']}>
+                <Layout>
+                  <QuotationForm />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          
+          <Route
+            path="/quotations/:id"
+            element={
+              <ProtectedRoute allowedRoles={['admin', 'sales', 'accounts']}>
+                <Layout>
+                  <QuotationDetail />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          
+          {/* Invoices Routes */}
           <Route
             path="/invoices"
             element={
               <ProtectedRoute allowedRoles={['admin', 'accounts']}>
                 <Layout>
-                  <ComingSoon title="Invoices Module" />
+                  <Invoices />
                 </Layout>
               </ProtectedRoute>
             }
           />
-
+          
+          <Route
+            path="/invoices/new"
+            element={
+              <ProtectedRoute allowedRoles={['admin', 'accounts']}>
+                <Layout>
+                  <InvoiceForm />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          
+          <Route
+            path="/invoices/:id/edit"
+            element={
+              <ProtectedRoute allowedRoles={['admin', 'accounts']}>
+                <Layout>
+                  <InvoiceForm />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          
+          <Route
+            path="/invoices/:id"
+            element={
+              <ProtectedRoute allowedRoles={['admin', 'accounts']}>
+                <Layout>
+                  <InvoiceDetail />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          
+          {/* Payments Routes */}
           <Route
             path="/payments"
             element={
               <ProtectedRoute allowedRoles={['admin', 'accounts']}>
                 <Layout>
-                  <ComingSoon title="Payments Module" />
+                  <Payments />
                 </Layout>
               </ProtectedRoute>
             }
           />
-
+          
+          <Route
+            path="/payments/new"
+            element={
+              <ProtectedRoute allowedRoles={['admin', 'accounts']}>
+                <Layout>
+                  <PaymentForm />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          
+          {/* Expenses Routes */}
           <Route
             path="/expenses"
             element={
               <ProtectedRoute allowedRoles={['admin', 'accounts']}>
                 <Layout>
-                  <ComingSoon title="Expenses Module" />
+                  <Expenses />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          
+          <Route
+            path="/expenses/new"
+            element={
+              <ProtectedRoute allowedRoles={['admin', 'accounts']}>
+                <Layout>
+                  <ExpenseForm />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          
+          <Route
+            path="/expenses/:id/edit"
+            element={
+              <ProtectedRoute allowedRoles={['admin', 'accounts']}>
+                <Layout>
+                  <ExpenseForm />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Projects Routes */}
+          <Route
+            path="/projects"
+            element={
+              <ProtectedRoute allowedRoles={['admin', 'accounts', 'sales']}>
+                <Layout>
+                  <Projects />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          
+          <Route
+            path="/projects/new"
+            element={
+              <ProtectedRoute allowedRoles={['admin', 'accounts']}>
+                <Layout>
+                  <ProjectForm />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          
+          <Route
+            path="/projects/:id"
+            element={
+              <ProtectedRoute allowedRoles={['admin', 'accounts', 'sales']}>
+                <Layout>
+                  <ProjectDetail />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          
+          <Route
+            path="/projects/:id/edit"
+            element={
+              <ProtectedRoute allowedRoles={['admin', 'accounts']}>
+                <Layout>
+                  <ProjectForm />
                 </Layout>
               </ProtectedRoute>
             }

@@ -13,16 +13,20 @@ import {
   Menu,
   X,
   ChevronDown,
+  Package,
+  Target,
 } from 'lucide-react'
 
 const navigation = [
   { name: 'Dashboard', href: '/', icon: LayoutDashboard, roles: ['admin', 'sales', 'accounts'] },
   { name: 'Leads', href: '/leads', icon: Users, roles: ['admin', 'sales', 'accounts'] },
   { name: 'Follow-ups', href: '/followups', icon: ClipboardList, roles: ['admin', 'sales', 'accounts'] },
+  { name: 'Products', href: '/products', icon: Package, roles: ['admin', 'sales', 'accounts'] },
   { name: 'Quotations', href: '/quotations', icon: FileText, roles: ['admin', 'sales', 'accounts'] },
   { name: 'Invoices', href: '/invoices', icon: Receipt, roles: ['admin', 'accounts'] },
   { name: 'Payments', href: '/payments', icon: CreditCard, roles: ['admin', 'accounts'] },
   { name: 'Expenses', href: '/expenses', icon: DollarSign, roles: ['admin', 'accounts'] },
+  { name: 'Projects', href: '/projects', icon: Target, roles: ['admin', 'sales', 'accounts'] },
 ]
 
 export default function Layout({ children }) {

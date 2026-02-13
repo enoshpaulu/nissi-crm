@@ -11,6 +11,7 @@ import {
   AlertCircle,
   Calendar,
   CheckCircle,
+  Target,
 } from 'lucide-react'
 
 export default function Dashboard() {
@@ -24,6 +25,9 @@ export default function Dashboard() {
     pendingAmount: 0,
     pendingFollowups: 0,
     todayFollowups: 0,
+    totalProjects: 0,
+    activeProjects: 0,
+    totalProfit: 0,
   })
   const [todayTasks, setTodayTasks] = useState([])
   const [loading, setLoading] = useState(true)
@@ -116,6 +120,36 @@ export default function Dashboard() {
         .eq('status', 'pending')
         .eq('due_date', today)
 
+      // Fetch projects data
+      const { data: projects } = await supabase
+        .from('projects')
+        .select('id, status')
+
+      const totalProjects = projects?.length || 0
+      const activeProjects = projects?.filter(p => p.status === 'in_progress').length || 0
+
+      // Calculate total profit from projects
+      let totalProfit = 0
+      if (projects && projects.length > 0) {
+        for (const project of projects) {
+          // Get payments for this project
+          const { data: payments } = await supabase
+            .from('payments')
+            .select('amount')
+            .eq('project_id', project.id)
+
+          // Get expenses for this project
+          const { data: expenses } = await supabase
+            .from('expenses')
+            .select('amount')
+            .eq('project_id', project.id)
+
+          const totalReceived = payments?.reduce((sum, p) => sum + parseFloat(p.amount || 0), 0) || 0
+          const totalSpent = expenses?.reduce((sum, e) => sum + parseFloat(e.amount || 0), 0) || 0
+          totalProfit += (totalReceived - totalSpent)
+        }
+      }
+
       setStats({
         totalLeads: totalLeads || 0,
         newLeads: newLeads || 0,
@@ -125,6 +159,9 @@ export default function Dashboard() {
         pendingAmount,
         pendingFollowups: pendingFollowups || 0,
         todayFollowups: todayFollowups || 0,
+        totalProjects,
+        activeProjects,
+        totalProfit,
       })
     } catch (error) {
       console.error('Error fetching dashboard stats:', error)
@@ -174,6 +211,20 @@ export default function Dashboard() {
       value: `₹${stats.pendingAmount.toLocaleString('en-IN')}`,
       icon: DollarSign,
       color: 'bg-red-500',
+      show: ['admin', 'accounts'].includes(profile?.role),
+    },
+    {
+      name: 'Active Projects',
+      value: stats.activeProjects,
+      icon: Target,
+      color: 'bg-indigo-500',
+      show: true,
+    },
+    {
+      name: 'Total Profit',
+      value: `₹${stats.totalProfit.toLocaleString('en-IN')}`,
+      icon: TrendingUp,
+      color: 'bg-purple-500',
       show: ['admin', 'accounts'].includes(profile?.role),
     },
   ].filter(stat => stat.show)
@@ -254,14 +305,14 @@ export default function Dashboard() {
               </Link>
             )}
             {['admin', 'accounts'].includes(profile?.role) && (
-              <button className="btn btn-secondary" disabled>
+              <Link to="/invoices/new" className="btn btn-secondary">
                 Generate Invoice
-              </button>
+              </Link>
             )}
             {['admin', 'accounts'].includes(profile?.role) && (
-              <button className="btn btn-secondary" disabled>
+              <Link to="/payments/new" className="btn btn-secondary">
                 Record Payment
-              </button>
+              </Link>
             )}
           </div>
         </div>
