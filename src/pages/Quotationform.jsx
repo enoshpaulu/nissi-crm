@@ -371,7 +371,7 @@ export default function QuotationForm() {
                       {product.image_url ? (
                         <img src={product.image_url} alt={product.model} className="w-20 h-20 object-cover rounded" />
                       ) : (
-                        <div className="w-20 h-20 bg-gray-100 rounded flex items-center justify-center flex-shrink-0"><ImageIcon className="w-8 h-8 text-gray-400" /></div>
+                        <div className="w-20 h-20 bg-gray-100 rounded flex items-center justify-center flex-shrink-0"><ImageIcon className="w-8 h-8 text-gray-300" /></div>
                       )}
                       <div className="flex-1 min-w-0">
                         <h4 className="font-semibold text-gray-900">{product.model}</h4>
