@@ -67,17 +67,26 @@ export default function QuotationDetail() {
 
       if (quotationError) throw quotationError
 
-      // Fetch line items
+      // Fetch line items with product category
       const { data: itemsData, error: itemsError } = await supabase
         .from('quotation_items')
-        .select('*')
+        .select(`
+          *,
+          product:product_id(category)
+        `)
         .eq('quotation_id', id)
         .order('sort_order')
 
       if (itemsError) throw itemsError
 
+      // Merge product category into item if item category is missing
+      const itemsWithCategory = (itemsData || []).map(item => ({
+        ...item,
+        category: item.category || item.product?.category || 'UNCATEGORIZED'
+      }))
+
       setQuotation(quotationData)
-      setLineItems(itemsData || [])
+      setLineItems(itemsWithCategory)
     } catch (error) {
       console.error('Error fetching quotation:', error)
       alert('Error loading quotation details')
@@ -104,9 +113,9 @@ export default function QuotationDetail() {
     }
   }
 
-  const handleDownloadPDF = () => {
+  const handleDownloadPDF = async () => {
     try {
-      generateProfessionalQuotationPDF(quotation, quotation.lead, lineItems)
+      await generateProfessionalQuotationPDF(quotation, quotation.lead, lineItems)
     } catch (error) {
       console.error('Error generating PDF:', error)
       alert('Error generating PDF: ' + error.message)

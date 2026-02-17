@@ -193,7 +193,8 @@ export default function InvoiceForm() {
       units: product.units,
       quantity: 1,
       unit_price: Number(product.selling_price),
-      amount: Number(product.selling_price)
+      amount: Number(product.selling_price),
+      category: product.category || 'UNCATEGORIZED'
     }])
     setShowProductPicker(false)
     setProductSearch('')
@@ -280,6 +281,7 @@ export default function InvoiceForm() {
           quantity: item.quantity,
           unit_price: item.unit_price,
           amount: item.amount,
+          category: item.category || 'UNCATEGORIZED',
           base_price: item.unit_price / 1.18,
           gst_amount: item.amount - item.amount / 1.18,
           sort_order: idx
@@ -313,6 +315,7 @@ export default function InvoiceForm() {
           quantity: item.quantity,
           unit_price: item.unit_price,
           amount: item.amount,
+          category: item.category || 'UNCATEGORIZED',
           base_price: item.unit_price / 1.18,
           gst_amount: item.amount - item.amount / 1.18,
           sort_order: idx

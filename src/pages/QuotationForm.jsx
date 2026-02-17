@@ -108,7 +108,7 @@ export default function QuotationForm() {
       id: Date.now(), product_id: product.id, item_name: product.model,
       description: product.description || '', image_url: product.image_url || '',
       units: product.units, quantity: 1, unit_price: Number(product.selling_price),
-      amount: Number(product.selling_price)
+      amount: Number(product.selling_price), category: product.category || 'UNCATEGORIZED'
     }])
     setShowProductPicker(false)
     setProductSearch('')
@@ -180,6 +180,7 @@ export default function QuotationForm() {
           quotation_id: id, product_id: item.product_id, item_name: item.item_name,
           description: item.description, image_url: item.image_url, units: item.units,
           quantity: item.quantity, unit_price: item.unit_price, amount: item.amount,
+          category: item.category || 'UNCATEGORIZED',
           base_price: item.unit_price / 1.18, gst_amount: item.amount - item.amount / 1.18, sort_order: idx
         }))
         await supabase.from('quotation_items').insert(items)
@@ -194,6 +195,7 @@ export default function QuotationForm() {
           quotation_id: newQuot.id, product_id: item.product_id, item_name: item.item_name,
           description: item.description, image_url: item.image_url, units: item.units,
           quantity: item.quantity, unit_price: item.unit_price, amount: item.amount,
+          category: item.category || 'UNCATEGORIZED',
           base_price: item.unit_price / 1.18, gst_amount: item.amount - item.amount / 1.18, sort_order: idx
         }))
         await supabase.from('quotation_items').insert(items)
@@ -371,7 +373,7 @@ export default function QuotationForm() {
                       {product.image_url ? (
                         <img src={product.image_url} alt={product.model} className="w-20 h-20 object-cover rounded" />
                       ) : (
-                        <div className="w-20 h-20 bg-gray-100 rounded flex items-center justify-center flex-shrink-0"><ImageIcon className="w-8 h-8 text-gray-300" /></div>
+                        <div className="w-20 h-20 bg-gray-100 rounded flex items-center justify-center flex-shrink-0"><ImageIcon className="w-8 h-8 text-gray-400" /></div>
                       )}
                       <div className="flex-1 min-w-0">
                         <h4 className="font-semibold text-gray-900">{product.model}</h4>

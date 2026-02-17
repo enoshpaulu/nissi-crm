@@ -74,14 +74,23 @@ export default function InvoiceDetail() {
 
       const { data: itemsData, error: itemsError } = await supabase
         .from('invoice_items')
-        .select('*')
+        .select(`
+          *,
+          product:product_id(category)
+        `)
         .eq('invoice_id', id)
         .order('sort_order')
 
       if (itemsError) throw itemsError
 
+      // Merge product category into item if item category is missing
+      const itemsWithCategory = (itemsData || []).map(item => ({
+        ...item,
+        category: item.category || item.product?.category || 'UNCATEGORIZED'
+      }))
+
       setInvoice(invoiceData)
-      setLineItems(itemsData || [])
+      setLineItems(itemsWithCategory)
     } catch (error) {
       console.error('Error fetching invoice:', error)
       alert('Error loading invoice details')
