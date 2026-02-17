@@ -266,6 +266,7 @@ export default function ProductForm() {
                   className="input"
                 >
                   <option value="pcs">Pieces (pcs)</option>
+                  <option value="pair">Pair</option>
                   <option value="kg">Kilograms (kg)</option>
                   <option value="m">Meters (m)</option>
                   <option value="sqft">Square Feet (sq ft)</option>
