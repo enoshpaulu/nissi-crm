@@ -111,7 +111,7 @@ export const generateProfessionalQuotationPDF = async (quotation, lead, items) =
   doc.text('QUOTE NO.', pageWidth - 50, 33);
   doc.setFont(undefined, 'normal');
   doc.setFontSize(10);
-  doc.text(quotation.quotation_number, pageWidth - rightMargin, 33, { align: 'right' });
+  doc.text(quotation.quotation_number, pageWidth - 50, 38);
   
   // ========== CUSTOMER SECTION ==========
   yPos = 52;
@@ -153,7 +153,7 @@ export const generateProfessionalQuotationPDF = async (quotation, lead, items) =
   }, {});
   
   // Sort categories in preferred order
-  const categoryOrder = ['SOUND SYSTEM', 'ELECTRONICS', 'DISPLAY SYSTEM', 'ACCESSORIES', 'UNCATEGORIZED'];
+  const categoryOrder = ['SOUND SYSTEM', 'ELECTRONICS', 'DISPLAY SYSTEM', 'ACOUSTICS', 'ACCESSORIES', 'UNCATEGORIZED'];
   const sortedCategories = Object.keys(groupedItems).sort((a, b) => {
     const indexA = categoryOrder.indexOf(a);
     const indexB = categoryOrder.indexOf(b);
@@ -538,7 +538,7 @@ export const generateProfessionalInvoicePDF = async (invoice, lead, items) => {
   doc.text('INVOICE NO.', pageWidth - 50, 33);
   doc.setFont(undefined, 'normal');
   doc.setFontSize(10);
-  doc.text(invoice.invoice_number, pageWidth - rightMargin, 33, { align: 'right' });
+  doc.text(invoice.invoice_number, pageWidth - 50, 38);
   
   // ========== CUSTOMER SECTION ==========
   yPos = 55;
@@ -591,7 +591,7 @@ export const generateProfessionalInvoicePDF = async (invoice, lead, items) => {
     return acc;
   }, {});
   
-  const categoryOrder = ['SOUND SYSTEM', 'ELECTRONICS', 'DISPLAY SYSTEM', 'ACCESSORIES', 'UNCATEGORIZED'];
+  const categoryOrder = ['SOUND SYSTEM', 'ELECTRONICS', 'DISPLAY SYSTEM', 'ACOUSTICS', 'ACCESSORIES', 'UNCATEGORIZED'];
   const sortedCategories = Object.keys(groupedItems).sort((a, b) => {
     const indexA = categoryOrder.indexOf(a);
     const indexB = categoryOrder.indexOf(b);
