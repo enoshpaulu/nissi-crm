@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import { generateProfessionalQuotationPDF } from '../utils/professionalPdfGenerator'
+import TermsAndConditions from '../components/TermsAndConditions'
 import {
   ArrowLeft,
   Edit,
@@ -598,6 +599,9 @@ export default function QuotationDetail() {
             </div>
           </div>
         </div>
+        
+        {/* Terms and Conditions */}
+        <TermsAndConditions />
       </div>
     </div>
   )

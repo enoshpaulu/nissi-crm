@@ -7,13 +7,73 @@ const COMPANY = {
   address: 'Shop no. 3, H. no 2-22-248,\nJayanagr, Kukatpally, Hyderabad - 500072.',
   phone: '+91-7673909090',
   email: 'nissiofficesystems@gmail.com',
-  logoUrl: 'https://uzdqrtkupkcyacyfcpfk.supabase.co/storage/v1/object/public/Nissi%20Images/Nissi-Office-Systems.jpg',
+  logoUrl: 'https://res.cloudinary.com/dptwdrmjf/image/upload/v1772294224/Nissi-Office-Systems_wok2l9.jpg',
   gst: '36ABMPU1856H1Z6',
   bank: {
     name: 'NISSI OFFICE SYSTEMS',
     accountNo: '510101003246816',
     branch: 'KUKATPALLY',
     ifsc: 'UBIN0907707'
+  }
+};
+
+// Terms and Conditions
+const TERMS_AND_CONDITIONS = [
+  'Payment: 70% Advance, 30% on Delivery',
+  'Delivery: 15 - 20 days from the day of Advance',
+  'Validity: 15 Days from the date of Proposal',
+  'Warranty: As per Manufacture\'s terms',
+  'Good\'s once sold cannot be returned or exchanged.',
+  'In case payment is not made within the agreed terms, 3% P.M interest compound will be charged on due payment.'
+];
+
+// Helper function to load image and convert to base64
+const loadImageAsBase64 = async (imageUrl) => {
+  if (!imageUrl) return null;
+  
+  console.log('Attempting to load image:', imageUrl);
+  
+  try {
+    // Create a canvas to convert image to base64
+    const img = new Image();
+    img.crossOrigin = 'Anonymous';
+    
+    return await new Promise((resolve, reject) => {
+      const timeout = setTimeout(() => {
+        console.warn('⚠️ Image load timeout (Supabase blocked?):', imageUrl);
+        resolve(null);
+      }, 5000); // 5 second timeout
+      
+      img.onload = () => {
+        clearTimeout(timeout);
+        console.log('✅ Image loaded successfully');
+        try {
+          // Convert to base64
+          const canvas = document.createElement('canvas');
+          canvas.width = img.naturalWidth;
+          canvas.height = img.naturalHeight;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0);
+          const base64 = canvas.toDataURL('image/jpeg', 0.8);
+          console.log('✅ Image converted to base64');
+          resolve(base64);
+        } catch (e) {
+          console.error('❌ Canvas conversion error:', e);
+          resolve(null);
+        }
+      };
+      
+      img.onerror = (error) => {
+        clearTimeout(timeout);
+        console.error('❌ Image load error (Network block?):', imageUrl, error);
+        resolve(null);
+      };
+      
+      img.src = imageUrl;
+    });
+  } catch (e) {
+    console.error('❌ Image processing error:', e);
+    return null;
   }
 };
 
@@ -173,19 +233,7 @@ export const generateProfessionalQuotationPDF = async (quotation, lead, items) =
       let imageData = null;
       
       if (item.image_url) {
-        try {
-          const img = new Image();
-          img.crossOrigin = 'Anonymous';
-          
-          imageData = await new Promise((resolve) => {
-            img.onload = () => resolve(img);
-            img.onerror = () => resolve(null);
-            img.src = item.image_url;
-            setTimeout(() => resolve(null), 2000);
-          });
-        } catch (e) {
-          imageData = null;
-        }
+        imageData = await loadImageAsBase64(item.image_url);
       }
       
       return {
@@ -234,6 +282,7 @@ export const generateProfessionalQuotationPDF = async (quotation, lead, items) =
       ]],
       body: tableData,
       theme: 'grid',
+      showHead: 'firstPage', // Only show column headers on first page of this category
       headStyles: {
         fontSize: 8,
         fontStyle: 'bold',
@@ -265,14 +314,24 @@ export const generateProfessionalQuotationPDF = async (quotation, lead, items) =
                 const imgHeight = 18;
                 const imgX = data.cell.x + (data.cell.width - imgWidth) / 2;
                 const imgY = data.cell.y + (data.cell.height - imgHeight) / 2;
+                // item.image is now a base64 string (data:image/jpeg;base64,...)
                 doc.addImage(item.image, 'JPEG', imgX, imgY, imgWidth, imgHeight);
               } catch (e) {
+                console.error('Failed to add image:', e);
+                // Show placeholder if image fails
                 doc.setFontSize(7);
                 doc.setTextColor(150);
-                doc.text('[IMG]', data.cell.x + data.cell.width / 2, data.cell.y + data.cell.height / 2, { 
+                doc.text('[No Img]', data.cell.x + data.cell.width / 2, data.cell.y + data.cell.height / 2, { 
                   align: 'center' 
                 });
               }
+            } else {
+              // No image available - show placeholder
+              doc.setFontSize(7);
+              doc.setTextColor(200);
+              doc.text('—', data.cell.x + data.cell.width / 2, data.cell.y + data.cell.height / 2, { 
+                align: 'center' 
+              });
             }
           }
         };
@@ -388,31 +447,24 @@ export const generateProfessionalQuotationPDF = async (quotation, lead, items) =
   doc.setFont(undefined, 'normal');
   doc.setTextColor(60);
   
-  if (quotation.terms_and_conditions) {
-    const customTerms = quotation.terms_and_conditions.split('\n').filter(t => t.trim());
-    customTerms.forEach((term, idx) => {
-      totalY = checkPageBreak(totalY, 5);
-      const termText = term.startsWith(`${idx + 1}.`) ? term : `${idx + 1}. ${term}`;
-      doc.text(termText, 15, totalY);
-      totalY += 4.5;
-    });
-  } else {
-    const terms = [
-      '1. Above Price is Inclusive of GST',
-      `2. Validity: ${quotation.valid_until ? new Date(quotation.valid_until).toLocaleDateString('en-IN') : '15 Days from the date of proposal'}`,
-      '3. Payment Terms: As per agreement',
-      '4. Delivery: As per schedule',
-      '5. Warranty: As per Manufacturer\'s terms'
-    ];
-    terms.forEach(term => {
-      totalY = checkPageBreak(totalY, 5);
-      doc.text(term, 15, totalY);
-      totalY += 4.5;
-    });
-  }
+  // Use standard terms and conditions
+  TERMS_AND_CONDITIONS.forEach((term, idx) => {
+    totalY = checkPageBreak(totalY, 5);
+    const termText = `${idx + 1}. ${term}`;
+    doc.text(termText, 15, totalY);
+    totalY += 4.5;
+  });
   
-  // ========== FOOTER ==========
-  totalY = checkPageBreak(totalY, 25);
+  // ========== FOOTER (Always at bottom of page) ==========
+  // Calculate if we need a new page for footer
+  const footerHeight = 25;
+  if (totalY + footerHeight > pageHeight - 20) {
+    doc.addPage();
+    totalY = pageHeight - footerHeight - 10; // Position at bottom of new page
+  } else {
+    // Position at bottom of current page
+    totalY = pageHeight - footerHeight - 10;
+  }
   
   doc.setFontSize(9);
   doc.setFont(undefined, 'bold');
@@ -641,6 +693,7 @@ export const generateProfessionalInvoicePDF = async (invoice, lead, items) => {
       ]],
       body: tableData,
       theme: 'grid',
+      showHead: 'firstPage', // Only show column headers on first page of this category
       headStyles: {
         fontSize: 8,
         fontStyle: 'bold',
@@ -734,7 +787,7 @@ export const generateProfessionalInvoicePDF = async (invoice, lead, items) => {
   totalY += 8;
   doc.setFontSize(11);
   doc.setTextColor(30);
-  doc.text('TOTAL AMOUNT', labelX, totalY);
+  doc.text('TOTAL', labelX, totalY);
   doc.text(`Rs. ${grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, rightX, totalY, { align: 'right' });
   
   // Payment Status
@@ -775,24 +828,36 @@ export const generateProfessionalInvoicePDF = async (invoice, lead, items) => {
   totalY += 4;
   doc.text(`IFSC Code: ${COMPANY.bank.ifsc}`, 15, totalY);
   
-  // ========== PAYMENT TERMS ==========
-  if (invoice.payment_terms) {
-    totalY += 8;
-    totalY = checkPageBreak(totalY, 20);
-    doc.setFontSize(9);
-    doc.setFont(undefined, 'bold');
-    doc.setTextColor(30);
-    doc.text('Payment Terms:', 15, totalY);
-    doc.setFontSize(8);
-    doc.setFont(undefined, 'normal');
-    doc.setTextColor(60);
-    totalY += 5;
-    doc.text(invoice.payment_terms, 15, totalY);
-  }
-  
-  // ========== FOOTER ==========
-  totalY = checkPageBreak(totalY, 25);
+  // ========== TERMS AND CONDITIONS ==========
   totalY += 8;
+  totalY = checkPageBreak(totalY, 35);
+  doc.setFontSize(9);
+  doc.setFont(undefined, 'bold');
+  doc.setTextColor(30);
+  doc.text('Terms and Conditions:', 15, totalY);
+  
+  totalY += 5;
+  doc.setFontSize(8);
+  doc.setFont(undefined, 'normal');
+  doc.setTextColor(60);
+  
+  TERMS_AND_CONDITIONS.forEach((term, idx) => {
+    totalY = checkPageBreak(totalY, 5);
+    const termText = `${idx + 1}. ${term}`;
+    doc.text(termText, 15, totalY);
+    totalY += 4.5;
+  });
+  
+  // ========== FOOTER (Always at bottom of page) ==========
+  // Calculate if we need a new page for footer
+  const footerHeight = 25;
+  if (totalY + footerHeight > pageHeight - 20) {
+    doc.addPage();
+    totalY = pageHeight - footerHeight - 10; // Position at bottom of new page
+  } else {
+    // Position at bottom of current page
+    totalY = pageHeight - footerHeight - 10;
+  }
   
   doc.setFontSize(9);
   doc.setFont(undefined, 'bold');
