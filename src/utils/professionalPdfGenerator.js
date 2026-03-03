@@ -7,7 +7,7 @@ const COMPANY = {
   address: 'Shop no. 3, H. no 2-22-248,\nJayanagr, Kukatpally, Hyderabad - 500072.',
   phone: '+91-7673909090',
   email: 'nissiofficesystems@gmail.com',
-  logoUrl: 'https://res.cloudinary.com/dptwdrmjf/image/upload/v1772294224/Nissi-Office-Systems_wok2l9.jpg',
+  logoUrl: 'https://uzdqrtkupkcyacyfcpfk.supabase.co/storage/v1/object/public/Nissi%20Images/Nissi-Office-Systems.jpg',
   gst: '36ABMPU1856H1Z6',
   bank: {
     name: 'NISSI OFFICE SYSTEMS',
