@@ -278,7 +278,7 @@ export default function ProductForm() {
                   <label className={label}>Units / Measurement</label>
                   <select name="units" value={formData.units} onChange={handleChange} className={inputBase}>
                     <option value="pcs">Pieces (pcs)</option>
-                    <option value="pair">Pair (piar)</option>
+                    <option value="pair">Pair (pair)</option>
                     <option value="kg">Kilograms (kg)</option>
                     <option value="m">Meters (m)</option>
                     <option value="sqft">Square Feet (sq ft)</option>
