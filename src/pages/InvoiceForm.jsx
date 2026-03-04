@@ -117,7 +117,8 @@ export default function InvoiceForm() {
         units: item.units,
         quantity: item.quantity,
         unit_price: item.unit_price,
-        amount: item.amount
+        amount: item.amount,
+        category: item.category || 'UNCATEGORIZED' // ← FIX: Copy category from quotation!
       })))
     } catch (error) {
       console.error('Error loading quotation:', error)

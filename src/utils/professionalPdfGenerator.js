@@ -372,47 +372,8 @@ export const generateProfessionalQuotationPDF = async (quotation, lead, items) =
   doc.text('GRAND TOTAL', 14 + gtTableWidth / 2, yPos + 6, { align: 'center' });
   doc.text(`Rs. ${grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, 14 + gtTableWidth - 3, yPos + 6, { align: 'right' });
   
-  // ========== GST BREAKDOWN & TOTAL ==========
-  let totalY = yPos + 14;
-  totalY = checkPageBreak(totalY, 40);
-  
-  const taxableAmount = grandTotal / 1.18;
-  const gstAmount = grandTotal - taxableAmount;
-  const cgst = gstAmount / 2;
-  const sgst = gstAmount / 2;
-  
-  doc.setFontSize(8);
-  doc.setTextColor(80);
-  doc.setFont(undefined, 'normal');
-  
-  const rightX = pageWidth - 14;
-  const labelX = pageWidth - 65;
-  
-  doc.text('Taxable Amount:', labelX, totalY);
-  doc.text(`Rs. ${taxableAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, rightX, totalY, { align: 'right' });
-  
-  totalY += 4.5;
-  doc.text('CGST (9%):', labelX, totalY);
-  doc.text(`Rs. ${cgst.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, rightX, totalY, { align: 'right' });
-  
-  totalY += 4.5;
-  doc.text('SGST (9%):', labelX, totalY);
-  doc.text(`Rs. ${sgst.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, rightX, totalY, { align: 'right' });
-  
-  totalY += 4.5;
-  doc.setFont(undefined, 'bold');
-  doc.text('Total GST (18%):', labelX, totalY);
-  doc.text(`Rs. ${gstAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, rightX, totalY, { align: 'right' });
-  
-  // Final Total
-  totalY += 8;
-  doc.setFontSize(11);
-  doc.setTextColor(30);
-  doc.text('TOTAL', labelX, totalY);
-  doc.text(`Rs. ${grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, rightX, totalY, { align: 'right' });
-  
   // ========== BANK DETAILS ==========
-  totalY += 12;
+  let totalY = yPos + 14;
   totalY = checkPageBreak(totalY, 30);
   
   doc.setFontSize(9);
