@@ -213,11 +213,11 @@ export default function InvoiceDetail() {
         <div className="flex items-center gap-2">
           {(isAdmin || isAccounts) && (
             <>
-              <Link to={`/invoices/${id}/edit`} className="btn btn-secondary">
+              <Link to={`/invoices/${id}/edit`} className="btn btn-primary ">
                 <Edit className="w-4 h-4 mr-2" />
                 Edit
               </Link>
-              <button onClick={handleDownloadPDF} className="btn btn-primary">
+              <button onClick={handleDownloadPDF} className="btn bg-emerald-600 text-white hover:bg-emerald-700">
                 <Download className="w-4 h-4 mr-2" />
                 Download PDF
               </button>
@@ -606,7 +606,7 @@ export default function InvoiceDetail() {
               {invoice.balance_amount > 0 && (isAdmin || isAccounts) && (
                 <Link
                   to={`/payments/new?invoice_id=${invoice.id}`}
-                  className="btn btn-primary w-full"
+                  className="btn bg-emerald-700 text-white w-full"
                 >
                   <DollarSign className="w-4 h-4 mr-2" />
                   Record Payment
